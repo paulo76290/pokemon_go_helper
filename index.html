@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f24b4b">
+  <title>Mon Pokédex GO</title>
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav shell">
+      <a class="brand" href="#">
+        <span class="pokeball" aria-hidden="true"></span>
+        <span>Mon Pokédex <b>GO</b></span>
+      </a>
+      <button id="resetButton" class="ghost-button" type="button">Réinitialiser mes données</button>
+    </nav>
+
+    <section class="hero-content shell">
+      <div>
+        <p class="eyebrow">Ton compagnon de collection</p>
+        <h1>Qui as-tu déjà attrapé&nbsp;?</h1>
+        <p class="intro">Coche tes Pokémon, note tes bonbons et vois immédiatement quelles évolutions sont à ta portée.</p>
+      </div>
+      <div class="progress-card">
+        <div class="progress-copy">
+          <span>Pokédex complété</span>
+          <strong id="progressLabel">0 / 0</strong>
+        </div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+        <small id="progressPercent">0 % de la collection</small>
+      </div>
+    </section>
+  </header>
+
+  <main class="shell">
+    <nav class="main-tabs" aria-label="Sections de l’application">
+      <button class="main-tab active" data-view="pokedex" type="button">◉ Pokédex</button>
+      <button class="main-tab" data-view="candies" type="button">🍬 Bonbons à trouver</button>
+    </nav>
+
+    <section class="toolbar" data-view-section="pokedex" aria-label="Filtres du Pokédex">
+      <label class="search">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Rechercher un Pokémon…" autocomplete="off">
+      </label>
+      <div class="filters" id="filters">
+        <button class="filter active" data-filter="all" type="button">Tous</button>
+        <button class="filter" data-filter="owned" type="button">Possédés</button>
+        <button class="filter" data-filter="ready" type="button">Évolution prête</button>
+        <button class="filter" data-filter="missing" type="button">À trouver</button>
+      </div>
+      <label class="generation-select">
+        <span>Génération</span>
+        <select id="generationSelect">
+          <option value="all">Toutes</option>
+          <option value="1">Kanto</option>
+          <option value="2">Johto</option>
+          <option value="3">Hoenn</option>
+          <option value="4">Sinnoh</option>
+          <option value="5">Unys</option>
+          <option value="6">Kalos</option>
+          <option value="7">Alola</option>
+          <option value="8">Galar</option>
+          <option value="9">Paldea</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="dashboard" data-view-section="pokedex" aria-label="Statistiques de collection">
+      <article class="dashboard-card regions-card">
+        <div class="dashboard-heading">
+          <div>
+            <p class="eyebrow-dark">Progression</p>
+            <h2>Statistiques par région</h2>
+          </div>
+          <span id="regionTotal"></span>
+        </div>
+        <div id="regionStats" class="region-stats"></div>
+      </article>
+    </section>
+
+    <section id="candyView" class="candy-view" data-view-section="candies" hidden>
+      <div class="candy-view-heading">
+        <div>
+          <p class="eyebrow-dark">Objectif évolutions</p>
+          <h2>Ma liste de bonbons</h2>
+          <p>Les quantités sont calculées selon tes Pokémon possédés et tes bonbons disponibles.</p>
+        </div>
+        <span id="candyFamiliesCount"></span>
+      </div>
+      <div id="candyNeeds" class="candy-needs"></div>
+    </section>
+
+    <section class="summary" data-view-section="pokedex" aria-live="polite">
+      <p id="resultCount">Chargement du Pokédex…</p>
+      <p id="dataStatus">Connexion aux données Pokémon GO</p>
+    </section>
+
+    <section id="pokemonGrid" class="pokemon-grid" data-view-section="pokedex" aria-live="polite"></section>
+
+    <div id="emptyState" class="empty-state" data-view-section="pokedex" hidden>
+      <div class="empty-ball">?</div>
+      <h2>Aucun Pokémon par ici</h2>
+      <p>Essaie un autre nom ou modifie les filtres.</p>
+    </div>
+  </main>
+
+  <dialog id="pokemonDialog">
+    <button id="closeDialog" class="dialog-close" type="button" aria-label="Fermer">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <template id="pokemonCardTemplate">
+    <article class="pokemon-card">
+      <button class="card-main" type="button">
+        <div class="card-top">
+          <span class="dex-number"></span>
+          <span class="owned-badge">✓ Possédé</span>
+        </div>
+        <div class="sprite-wrap"><img class="sprite" alt="" loading="lazy"></div>
+        <h2 class="pokemon-name"></h2>
+        <p class="form-name"></p>
+      </button>
+      <div class="card-controls">
+        <label class="check-row">
+          <input class="owned-toggle" type="checkbox">
+          <span>Je l’ai</span>
+        </label>
+        <label class="quantity-row">
+          <span>Quantité</span>
+          <span class="stepper">
+            <button class="minus" type="button" aria-label="Retirer un">−</button>
+            <input class="quantity" type="number" min="0" max="9999" value="0" inputmode="numeric">
+            <button class="plus" type="button" aria-label="Ajouter un">+</button>
+          </span>
+        </label>
+        <label class="candy-row">
+          <span>🍬 Bonbons de la famille</span>
+          <input class="candy" type="number" min="0" max="99999" value="0" inputmode="numeric">
+        </label>
+        <div class="evolution-preview"></div>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
