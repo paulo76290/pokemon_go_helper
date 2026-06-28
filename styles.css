@@ -87,11 +87,25 @@ main { padding: 30px 0 70px; }
 .mini-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--red), #ff8a65); border-radius: inherit; }
 .region-stat.complete .mini-progress span { background: var(--green); }
 .dashboard-help { margin: -8px 0 13px; color: var(--muted); font-size: 11px; line-height: 1.4; }
-.candy-view { padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+.candy-view, .backup-view { padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
 .candy-view-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .candy-view-heading h2 { margin: 3px 0 7px; font-size: 26px; }
 .candy-view-heading p:last-child { margin: 0; color: var(--muted); font-size: 13px; }
 .candy-view-heading > span { padding: 8px 11px; color: var(--red-dark); background: #fff0f0; border-radius: 99px; font-size: 12px; font-weight: 850; white-space: nowrap; }
+.backup-heading { margin-bottom: 20px; }
+.backup-heading h2 { margin: 3px 0 7px; font-size: 26px; }
+.backup-heading p:last-child { max-width: 680px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.backup-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.backup-card { padding: 19px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(145deg, #fafbfe, #fff); }
+.backup-icon { width: 43px; height: 43px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 14px; color: #fff; background: var(--red); font-size: 22px; font-weight: 900; }
+.backup-card h3 { margin: 0 0 7px; font-size: 18px; }
+.backup-card p { min-height: 42px; margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.primary-button, .file-button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; border: 0; border-radius: 12px; padding: 0 15px; color: #fff; background: var(--red); font-size: 13px; font-weight: 850; box-shadow: 0 5px 13px rgba(237,75,75,.25); }
+.primary-button:hover, .file-button:hover { background: var(--red-dark); }
+.file-button input { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; pointer-events: none; }
+.backup-status { min-height: 20px; margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+.backup-status.success { color: var(--green); font-weight: 800; }
+.backup-status.error { color: var(--red-dark); font-weight: 800; }
 .candy-needs { display: grid; gap: 16px; }
 .candy-region { overflow: hidden; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
 .candy-region-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 15px; background: linear-gradient(100deg, #f7f8fb, #fff); }

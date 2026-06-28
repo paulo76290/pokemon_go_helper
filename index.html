@@ -39,6 +39,7 @@
     <nav class="main-tabs" aria-label="Sections de l’application">
       <button class="main-tab active" data-view="pokedex" type="button">◉ Pokédex</button>
       <button class="main-tab" data-view="candies" type="button">🍬 Bonbons à trouver</button>
+      <button class="main-tab" data-view="backup" type="button">⇄ Export / chargement</button>
     </nav>
 
     <section class="toolbar" data-view-section="pokedex" aria-label="Filtres du Pokédex">
@@ -92,6 +93,34 @@
         <span id="candyFamiliesCount"></span>
       </div>
       <div id="candyNeeds" class="candy-needs"></div>
+    </section>
+
+    <section id="backupView" class="backup-view" data-view-section="backup" hidden>
+      <div class="backup-heading">
+        <div>
+          <p class="eyebrow-dark">Sauvegarde</p>
+          <h2>Exporter ou charger tes infos</h2>
+          <p>Garde une copie de ta collection, de tes quantités et de tes bonbons, puis recharge-la quand tu veux.</p>
+        </div>
+      </div>
+      <div class="backup-actions">
+        <article class="backup-card">
+          <span class="backup-icon">↓</span>
+          <h3>Exporter mes données</h3>
+          <p>Télécharge un fichier JSON avec tes Pokémon possédés et tes bonbons.</p>
+          <button id="exportButton" class="primary-button" type="button">Exporter</button>
+        </article>
+        <article class="backup-card">
+          <span class="backup-icon">↑</span>
+          <h3>Charger une sauvegarde</h3>
+          <p>Remplace les données actuelles par celles d’un fichier exporté depuis cette app.</p>
+          <label class="file-button">
+            Choisir un fichier
+            <input id="importFile" type="file" accept="application/json,.json">
+          </label>
+        </article>
+      </div>
+      <p id="backupStatus" class="backup-status" role="status"></p>
     </section>
 
     <section class="summary" data-view-section="pokedex" aria-live="polite">

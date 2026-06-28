@@ -184,6 +184,79 @@ function save() {
   localStorage.setItem("pokedex-go-candies", JSON.stringify(state.candies));
 }
 
+function backupPayload() {
+  return {
+    app: "pokemon-go-helper",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    collection: state.collection,
+    candies: state.candies
+  };
+}
+
+function setBackupStatus(message, type = "") {
+  const status = $("#backupStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle("success", type === "success");
+  status.classList.toggle("error", type === "error");
+}
+
+function exportData() {
+  const payload = JSON.stringify(backupPayload(), null, 2);
+  const blob = new Blob([payload], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const date = new Date().toISOString().slice(0, 10);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `pokemon-go-helper-${date}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  setBackupStatus("Sauvegarde exportée. Garde bien ce fichier, c’est ton petit coffre à Poké-bonbons.", "success");
+}
+
+function sanitizeNumberMap(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value).map(([key, number]) => [
+    String(key),
+    Math.max(0, Math.min(99999, Number(number) || 0))
+  ]));
+}
+
+function sanitizeCollection(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value).map(([key, record]) => {
+    const quantity = Math.max(0, Math.min(9999, Number(record?.quantity) || 0));
+    const owned = Boolean(record?.owned) || quantity > 0;
+    return [String(key), { owned, quantity: owned && quantity === 0 ? 1 : quantity }];
+  }));
+}
+
+async function importData(file) {
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || typeof data !== "object" || (!data.collection && !data.candies)) {
+      throw new Error("Format invalide");
+    }
+    if (!confirm("Charger cette sauvegarde va remplacer ta collection et tes bonbons actuels. Continuer ?")) {
+      setBackupStatus("Chargement annulé.");
+      return;
+    }
+    state.collection = sanitizeCollection(data.collection);
+    state.candies = sanitizeNumberMap(data.candies);
+    save();
+    render();
+    const owned = Object.values(state.collection).filter(record => record.owned).length;
+    const candyFamilies = Object.keys(state.candies).length;
+    setBackupStatus(`Sauvegarde chargée : ${owned} Pokémon possédés et ${candyFamilies} familles de bonbons.`, "success");
+  } catch (error) {
+    setBackupStatus("Impossible de charger ce fichier. Vérifie que c’est bien une sauvegarde JSON de l’app.", "error");
+  }
+}
+
 function getRecord(p) {
   return state.collection[pokemonKey(p)] || { owned: false, quantity: 0 };
 }
@@ -606,6 +679,11 @@ function setupEvents() {
     state.candies = {};
     save();
     render();
+  });
+  $("#exportButton").addEventListener("click", exportData);
+  $("#importFile").addEventListener("change", e => {
+    importData(e.target.files?.[0]);
+    e.target.value = "";
   });
 }
 
